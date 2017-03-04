@@ -1,6 +1,7 @@
 var itemTemplate = $('#templates .item')
 var list         = $('#list')
 var api_base_url = "https://listalous.herokuapp.com/lists/Joelz-list/"
+
 var addItemToPage = function(itemData) {
   var item = itemTemplate.clone()
   item.attr('data-id', itemData.id)
@@ -54,5 +55,20 @@ $('#list').on('click', '.complete-button', function(event) {
     } else {
       item.removeClass('completed')
     }
-  })  
+  })
+})
+
+$('#list').on('click', '.delete-button', function(event) {
+  var item = $(event.target).parent()
+  var isItemCompleted = item.hasClass('completed')
+  var itemId = item.attr('data-id')
+
+  var updateRequest = $.ajax({
+    type: 'DELETE',
+    url: api_base_url + "/items/" + itemId,
+    data: { completed: !isItemCompleted }
+  })
+  updateRequest.done(function(itemData) {
+    $(item).remove()
+  })
 })
